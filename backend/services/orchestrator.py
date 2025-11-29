@@ -1,147 +1,46 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-"""High-level service that wires FastAPI endpoints to LangGraph."""
-=======
 """Factory orchestrator using LangGraph's create_react_agent with Ollama."""
->>>>>>> Stashed changes
-=======
-"""Factory orchestrator using LangGraph's create_react_agent with Ollama."""
->>>>>>> Stashed changes
-=======
-"""Factory orchestrator using LangGraph's create_react_agent with Ollama."""
->>>>>>> Stashed changes
 from __future__ import annotations
 
+import json
 import logging
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-from typing import Any, Dict
-
-from langchain_core.messages import AIMessage
-from langchain_core.runnables import Runnable, RunnableLambda
-from langchain_core.tools import Tool
-from langchain_openai import ChatOpenAI
-=======
 from typing import Any, Dict, List, Optional
 
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage
 from langgraph.prebuilt import create_react_agent
->>>>>>> Stashed changes
-=======
-from typing import Any, Dict, List, Optional
-
-from langchain_ollama import ChatOllama
-from langchain_core.messages import HumanMessage
-from langgraph.prebuilt import create_react_agent
->>>>>>> Stashed changes
-=======
-from typing import Any, Dict, List, Optional
-
-from langchain_ollama import ChatOllama
-from langchain_core.messages import HumanMessage
-from langgraph.prebuilt import create_react_agent
->>>>>>> Stashed changes
 
 from ..config import settings
 from ..schemas import QueryRequest
-from .langgraph_factory import FactoryState, create_smart_factory_graph
-from .tools import check_stock, machine_a, machine_b, machine_c, tool_check_schedule
+from .prompting import build_completion_prompt, enrich_owner_prompt
+from .runtime import runtime_manager
+from .tools import (
+    add_order_to_schedule,
+    assign_machine,
+    get_schedule,
+    load_materials_available,
+    resource_tool,
+)
 
 logger = logging.getLogger(__name__)
 
+TOOLKIT = [
+    add_order_to_schedule,
+    get_schedule,
+    load_materials_available,
+    resource_tool,
+    assign_machine,
+]
+
 
 class FactoryOrchestrator:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    """Facilitates conversations between the UI, tools, and LangGraph."""
-=======
     """Coordinates FastAPI requests, tools, and the LangGraph agent."""
->>>>>>> Stashed changes
-=======
-    """Coordinates FastAPI requests, tools, and the LangGraph agent."""
->>>>>>> Stashed changes
-=======
-    """Coordinates FastAPI requests, tools, and the LangGraph agent."""
->>>>>>> Stashed changes
 
     def __init__(self) -> None:
-        self.tools = self._init_tools()
         self.llm = self._init_llm()
-        self.graph = create_smart_factory_graph(self.llm, self.tools)
+        self.prompt = self._build_prompt()
+        self.agent = self._init_agent()
+        runtime_manager.register_completion_callback(self._handle_machine_completion)
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    def _init_llm(self) -> Runnable:
-        """Return the ChatOpenAI client or a safe fallback when no key is configured."""
-
-        if settings.openai_api_key:
-            client_kwargs: Dict[str, Any] = {
-                "model": settings.llm_model,
-                "temperature": 0,
-                "api_key": settings.openai_api_key,
-            }
-            if settings.openai_base_url:
-                client_kwargs["base_url"] = settings.openai_base_url
-            return ChatOpenAI(**client_kwargs)
-
-        logger.warning(
-            "OPENAI_API_KEY not set. Falling back to a mock LLM; /api/query responses "
-            "will be placeholders until a real API key is provided."
-        )
-        return RunnableLambda(
-            lambda messages: AIMessage(
-                content="LLM unavailable: configure OPENAI_API_KEY to enable decisions."
-            )
-        )
-
-    def _init_tools(self) -> list[Tool]:
-        return [
-            Tool.from_function(
-                name="check_schedule",
-                description="Inspect and reason about the production schedule JSON",
-                func=tool_check_schedule,
-            ),
-            Tool.from_function(
-                name="check_stock",
-                description="Validate raw material inventory for a product",
-                func=check_stock,
-            ),
-            Tool.from_function(
-                name="machine_a",
-                description="Reserve machine A for a production task",
-                func=machine_a,
-            ),
-            Tool.from_function(
-                name="machine_b",
-                description="Reserve machine B for a production task",
-                func=machine_b,
-            ),
-            Tool.from_function(
-                name="machine_c",
-                description="Reserve machine C for a production task",
-                func=machine_c,
-            ),
-        ]
-
-    async def run(self, payload: QueryRequest) -> Dict[str, Any]:
-        state: FactoryState = {
-            "messages": [],
-            "context": {
-                "query": payload.message,
-                "metadata": payload.metadata or {},
-            },
-        }
-        return await self.graph.ainvoke(state)
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     def _init_llm(self) -> Optional[ChatOllama]:
         try:
             return ChatOllama(
@@ -311,13 +210,6 @@ If an action cannot be completed due to insufficient materials, no available mac
             )
         except Exception:  # pragma: no cover - defensive logging
             logger.exception("Auto-run agent invocation failed after completion")
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 
 def orchestrator_factory() -> FactoryOrchestrator:

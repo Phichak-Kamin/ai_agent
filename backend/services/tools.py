@@ -1,43 +1,67 @@
-"""Blueprint implementations for the LangGraph toolset."""
+"""LangChain tool definitions for the smart factory."""
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
-from .process_tracker import ProcessTracker
+from langchain.tools import tool
+from pydantic import BaseModel, Field
 
-tracker = ProcessTracker()
+from .data_store import JSONDataStore, get_data_store
+from .runtime import runtime_manager
 
-
-def tool_check_schedule(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Inspect production schedule entries and return a filtered view."""
-
-    raise NotImplementedError("Populate with custom schedule inspection logic")
+STORE: JSONDataStore = get_data_store()
 
 
-def check_stock(product: str) -> Dict[str, Any]:
-    """Return inventory status for the requested product."""
-
-    raise NotImplementedError("Implement local stock validation logic")
-
-
-def machine_a(name: str, number: int) -> Dict[str, Any]:
-    """Simulate running machine A. Updates tracker duration while active."""
-
-    raise NotImplementedError("Wire machine A to process tracker and machine data store")
+class AddOrderInput(BaseModel):
+    product: str
+    quantity: int = Field(gt=0)
+    order_time: str
+    process_time_sec: int = Field(gt=0)
+    deadline: str
 
 
-def machine_b(name: str, number: int) -> Dict[str, Any]:
-    """Simulate running machine B. Updates tracker duration while active."""
+class ResourceToolInput(BaseModel):
+    product_names: List[str] = Field(
+        ..., description="List of product names to inspect"
+    )
 
-    raise NotImplementedError("Wire machine B to process tracker and machine data store")
+
+class AssignMachineInput(BaseModel):
+    item_name: str = Field(..., description="Product to produce")
+    quantity: int = Field(gt=0)
+    machine: str = Field(..., description="Machine identifier (A/B/C or machine_a)")
+    order_id: str
 
 
-def machine_c(name: str, number: int) -> Dict[str, Any]:
-    """Simulate running machine C. Updates tracker duration while active."""
+@tool("add_order_to_schedule", args_schema=AddOrderInput)
+def add_order_to_schedule(
+    product: str,
+    quantity: int,
+    order_time: str,
+    process_time_sec: int,
+    deadline: str,
+) -> Dict[str, Any]:
+    """Append an order to schedule.json and return the new schedule."""
 
-<<<<<<< Updated upstream
-    raise NotImplementedError("Wire machine C to process tracker and machine data store")
-=======
+    schedule = STORE.load_schedule()
+    order_id = _next_order_id(schedule)
+    new_order = {
+        "order_id": order_id,
+        "product": product,
+        "quantity": quantity,
+        "order_time": order_time,
+        "process_time_sec": process_time_sec,
+        "deadline": deadline,
+    }
+    schedule.append(new_order)
+    STORE.save_schedule(schedule)
+    return {"schedule": schedule, "order": new_order}
+
+
+@tool("get_schedule")
+def get_schedule() -> Dict[str, Any]:
+    """Return the entire production schedule."""
+
     return {"schedule": STORE.load_schedule()}
 
 
@@ -190,4 +214,3 @@ def _normalize_machine(machine: str) -> str:
     if token.startswith("machine_"):
         return token
     raise ValueError(f"Unsupported machine identifier: {machine}")
->>>>>>> Stashed changes
