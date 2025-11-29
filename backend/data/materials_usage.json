@@ -1,0 +1,14 @@
+{
+  "widget_a": {
+    "steel": 2,
+    "plastic": 1
+  },
+  "widget_b": {
+    "steel": 3,
+    "copper": 1
+  },
+  "widget_c": {
+    "aluminum": 4,
+    "plastic": 2
+  }
+}

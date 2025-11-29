@@ -1,0 +1,132 @@
+:root {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #151618;
+  background: #f5f5f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f7;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  padding: 2rem 3rem;
+  background: linear-gradient(120deg, #0b5fff, #7c3aed);
+  color: white;
+}
+
+main {
+  flex: 1;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.panel {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__header {
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+
+.panel__body {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ebedf0;
+}
+
+.inventory {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.inventory ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inventory li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.status--idle {
+  color: #0b8b4c;
+}
+
+.status--busy {
+  color: #d7263d;
+}
+
+.console form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.console textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5f4;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.console button {
+  align-self: flex-start;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  background: #0b5fff;
+  color: white;
+  cursor: pointer;
+}
+
+.console__output {
+  margin-top: 1rem;
+  background: #0b5fff10;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.console__output pre {
+  margin: 0;
+  max-height: 220px;
+  overflow: auto;
+}
