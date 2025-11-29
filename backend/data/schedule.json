@@ -1,5 +1,13 @@
 [
   {
+    "order_id": "ORD-001",
+    "product": "sneakers",
+    "quantity": 42,
+    "order_time": "2025-11-20T09:12:00",
+    "process_time_sec": 3780,
+    "deadline": "2025-11-22T18:00:00"
+  },
+  {
     "order_id": "ORD-002",
     "product": "sandals",
     "quantity": 27,
@@ -14,21 +22,5 @@
     "order_time": "2025-11-20T11:05:00",
     "process_time_sec": 2160,
     "deadline": "2025-11-23T12:00:00"
-  },
-  {
-    "order_id": "ORD-004",
-    "product": "sneaker",
-    "quantity": 5,
-    "order_time": "2025-11-30T22:20:16.291031",
-    "process_time_sec": 480,
-    "deadline": "2025-11-30T23:59:59"
-  },
-  {
-    "order_id": "ORD-005",
-    "product": "sneakers",
-    "quantity": 5,
-    "order_time": "2025-11-30T22:22:25.273402",
-    "process_time_sec": 600,
-    "deadline": "2025-11-30T23:22:25.273402"
   }
 ]

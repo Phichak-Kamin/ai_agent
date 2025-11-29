@@ -80,7 +80,7 @@ def resource_tool(product_names: List[str]) -> Dict[str, Any]:
     materials_usage = STORE.load_materials_usage()
     inventory = STORE.load_materials_available()
 
-    available_machines = {name: status for name, status in machines.items() if status == 1}
+    machine_states = dict(machines)
     products: List[Dict[str, Any]] = []
 
     for product in product_names:
@@ -104,7 +104,7 @@ def resource_tool(product_names: List[str]) -> Dict[str, Any]:
         ]
         products.append({"product_name": product, "materials_needed": materials_needed})
 
-    return {"machines_status": available_machines, "products": products}
+    return {"machines_status": machine_states, "products": products}
 
 
 @tool("assign_machine", args_schema=AssignMachineInput)
