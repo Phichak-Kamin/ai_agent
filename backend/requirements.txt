@@ -5,3 +5,4 @@ langchain-openai>=0.1.0
 langgraph>=0.0.40
 pydantic>=2.7.0
 dotenv>=0.9.9
+pydantic-settings>=2.12.0

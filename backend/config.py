@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Final
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 BASE_DIR: Final[Path] = Path(__file__).resolve().parent
 
